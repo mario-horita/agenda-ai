@@ -72,7 +72,7 @@ end
 
 # Multi-Tenancy & Auth
 gem "acts_as_tenant", "~> 1.0"
-gem "devise", "~> 4.9"
+gem "devise", "~> 5.0"
 
 # Payments & Environment
 gem "dotenv-rails", groups: %i[ development test ]

@@ -76,5 +76,5 @@ gem "devise", "~> 4.9"
 
 # Payments & Environment
 gem "dotenv-rails", groups: %i[ development test ]
-gem "stripe", "~> 13.0"
+gem "stripe", "~> 19.5"
 gem "pg", "~> 1.5"

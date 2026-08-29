@@ -1,0 +1,65 @@
+<% content_for :title, "Confirmar Agendamento — #{@tenant.name}" %>
+
+<div class="max-w-xl mx-auto space-y-6">
+  <div class="text-center space-y-1">
+    <h2 class="text-2xl font-extrabold text-white">Seus Dados de Contato</h2>
+    <p class="text-xs text-slate-400">Informe seus dados para receber a confirmação e lembretes do agendamento.</p>
+  </div>
+
+  <!-- Booking Summary Card -->
+  <div class="p-6 rounded-3xl bg-slate-900/60 border border-slate-800/80 backdrop-blur-xl space-y-4">
+    <div class="flex items-center justify-between pb-4 border-b border-slate-800/80">
+      <div>
+        <h3 class="text-sm font-bold text-white"><%= @service.name %></h3>
+        <p class="text-xs text-slate-400 mt-0.5">Com <strong class="text-slate-200"><%= @professional.name %></strong></p>
+      </div>
+      <div class="text-right">
+        <span class="text-sm font-extrabold text-emerald-400"><%= @service.formatted_price %></span>
+        <span class="text-[11px] text-slate-400 block"><%= @service.duration_minutes %> min</span>
+      </div>
+    </div>
+
+    <div class="flex items-center gap-3 text-xs text-slate-300">
+      <span class="p-2 rounded-xl bg-indigo-500/10 text-indigo-400">
+        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+        </svg>
+      </span>
+      <div>
+        <p class="font-bold text-white"><%= @starts_at.strftime('%A, %d de %B de %Y') %></p>
+        <p class="text-slate-400">Horário: <strong class="text-indigo-400"><%= @starts_at.strftime('%H:%M') %></strong> às <%= (@starts_at + @service.duration_minutes.minutes).strftime('%H:%M') %></p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Client Details Form -->
+  <div class="p-6 rounded-3xl bg-slate-900/50 border border-slate-800/80 backdrop-blur-xl">
+    <%= form_with(url: public_bookings_path(tenant_slug: current_tenant.slug), method: :post, class: "space-y-4") do |f| %>
+      <%= hidden_field_tag :service_id, @service.id %>
+      <%= hidden_field_tag :professional_id, @professional.id %>
+      <%= hidden_field_tag :starts_at, @starts_at.iso8601 %>
+
+      <div>
+        <%= label_tag "client[name]", "Seu Nome Completo *", class: "block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5" %>
+        <%= text_field_tag "client[name]", nil, required: true, autofocus: true, class: "w-full px-4 py-2.5 bg-slate-950 border border-slate-800 focus:border-indigo-500 rounded-xl text-white placeholder-slate-500 text-sm outline-none", placeholder: "Ex: Roberto Souza" %>
+      </div>
+
+      <div>
+        <%= label_tag "client[phone]", "Celular / WhatsApp *", class: "block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5" %>
+        <%= telephone_field_tag "client[phone]", nil, required: true, class: "w-full px-4 py-2.5 bg-slate-950 border border-slate-800 focus:border-indigo-500 rounded-xl text-white placeholder-slate-500 text-sm outline-none", placeholder: "(11) 98765-4321" %>
+        <span class="text-[11px] text-slate-500 mt-1 block">Para receber lembretes do agendamento.</span>
+      </div>
+
+      <div>
+        <%= label_tag "client[email]", "Email", class: "block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5" %>
+        <%= email_field_tag "client[email]", nil, class: "w-full px-4 py-2.5 bg-slate-950 border border-slate-800 focus:border-indigo-500 rounded-xl text-white placeholder-slate-500 text-sm outline-none", placeholder: "roberto@email.com" %>
+      </div>
+
+      <div class="pt-4 space-y-3">
+        <%= f.submit "Confirmar Agendamento", class: "w-full py-3.5 px-4 rounded-xl bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 text-white font-bold text-sm shadow-lg shadow-indigo-600/30 transition transform hover:-translate-y-0.5 cursor-pointer" %>
+
+        <%= link_to "← Alterar Horário ou Serviço", public_bookings_path(tenant_slug: current_tenant.slug, service_id: @service.id, professional_id: @professional.id), class: "block text-center text-xs text-slate-400 hover:text-slate-200 transition" %>
+      </div>
+    <% end %>
+  </div>
+</div>

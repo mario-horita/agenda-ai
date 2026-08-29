@@ -1,0 +1,140 @@
+<div class="min-h-screen flex flex-col justify-between">
+  <!-- Navbar -->
+  <nav class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between w-full">
+    <div class="flex items-center gap-3">
+      <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-500 via-purple-500 to-pink-500 flex items-center justify-center font-extrabold text-white text-lg shadow-lg shadow-indigo-500/30">
+        AI
+      </div>
+      <span class="text-xl font-bold tracking-tight text-white">Agenda <span class="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-purple-400">AI</span></span>
+    </div>
+
+    <div class="flex items-center gap-4">
+      <%= link_to "Entrar no Painel", new_user_session_path, class: "text-sm font-semibold text-slate-300 hover:text-white px-4 py-2 rounded-xl transition hover:bg-slate-800/60" %>
+      <%= link_to "Começar Grátis", new_onboarding_path(plan: "pro"), class: "text-sm font-semibold bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 text-white px-5 py-2.5 rounded-xl shadow-lg shadow-indigo-600/30 transition transform hover:-translate-y-0.5" %>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <main class="max-w-6xl mx-auto px-6 pt-16 pb-24 text-center">
+    <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-indigo-500/30 bg-indigo-500/10 text-indigo-300 text-xs font-semibold uppercase tracking-wider mb-8 backdrop-blur-md">
+      <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+      SaaS de Agendamento Multi-Tenant com Rails 8 & Stripe
+    </div>
+
+    <h1 class="text-5xl sm:text-6xl md:text-7xl font-extrabold text-white tracking-tight leading-[1.1] max-w-4xl mx-auto mb-6">
+      Sua agenda no piloto automático, <span class="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 via-purple-300 to-pink-400">zero faltas</span>.
+    </h1>
+
+    <p class="text-lg sm:text-xl text-slate-400 max-w-2xl mx-auto mb-10 leading-relaxed">
+      A plataforma completa para salões, barbearias, clínicas e consultórios. Seus clientes agendam em segundos, recebem lembretes automáticos e seu negócio nunca para de crescer.
+    </p>
+
+    <div class="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16">
+      <%= link_to "Experimentar 14 Dias Grátis", new_onboarding_path(plan: "pro"), class: "w-full sm:w-auto px-8 py-4 rounded-2xl bg-gradient-to-r from-indigo-600 via-indigo-500 to-violet-600 text-white font-bold text-base shadow-xl shadow-indigo-500/25 hover:shadow-indigo-500/40 transform hover:-translate-y-0.5 transition text-center" %>
+      <a href="#planos" class="w-full sm:w-auto px-8 py-4 rounded-2xl bg-slate-900/80 border border-slate-800 hover:border-slate-700 text-slate-300 hover:text-white font-semibold text-base backdrop-blur-sm transition text-center">
+        Ver Planos & Preços
+      </a>
+    </div>
+
+    <!-- Feature Cards Grid -->
+    <div id="recursos" class="grid grid-cols-1 md:grid-cols-3 gap-6 text-left pt-12 border-t border-slate-800/80">
+      <div class="p-6 rounded-2xl bg-slate-900/50 border border-slate-800/80 backdrop-blur-xl">
+        <div class="w-12 h-12 rounded-xl bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 flex items-center justify-center mb-4">
+          <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+        </div>
+        <h3 class="text-lg font-bold text-white mb-2">Agendamento em 4 Cliques</h3>
+        <p class="text-sm text-slate-400 leading-relaxed">Página pública ultrarrápida, otimizada para smartphones. Seu cliente escolhe o serviço, profissional e horário em menos de 1 minuto.</p>
+      </div>
+
+      <div class="p-6 rounded-2xl bg-slate-900/50 border border-slate-800/80 backdrop-blur-xl">
+        <div class="w-12 h-12 rounded-xl bg-purple-500/10 border border-purple-500/20 text-purple-400 flex items-center justify-center mb-4">
+          <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+          </svg>
+        </div>
+        <h3 class="text-lg font-bold text-white mb-2">Lembretes Automáticos</h3>
+        <p class="text-sm text-slate-400 leading-relaxed">Reduza até 80% do no-show com confirmações por email e lembretes agendados com antecedência personalizável.</p>
+      </div>
+
+      <div class="p-6 rounded-2xl bg-slate-900/50 border border-slate-800/80 backdrop-blur-xl">
+        <div class="w-12 h-12 rounded-xl bg-pink-500/10 border border-pink-500/20 text-pink-400 flex items-center justify-center mb-4">
+          <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+          </svg>
+        </div>
+        <h3 class="text-lg font-bold text-white mb-2">Gestão & Indicadores</h3>
+        <p class="text-sm text-slate-400 leading-relaxed">Acompanhe faturamento, taxa de ocupação dos profissionais e métricas de desempenho em tempo real com Hotwire.</p>
+      </div>
+    </div>
+
+    <!-- Pricing Section -->
+    <div id="planos" class="pt-24">
+      <h2 class="text-3xl sm:text-4xl font-bold text-white mb-4">Planos que acompanham seu crescimento</h2>
+      <p class="text-slate-400 max-w-xl mx-auto mb-12">Comece no plano Starter ou acelere com o Pro com 14 dias de teste.</p>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto text-left">
+        <!-- Starter Plan -->
+        <div class="p-8 rounded-3xl bg-slate-900/40 border border-slate-800 backdrop-blur-xl flex flex-col justify-between">
+          <div>
+            <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Para Autônomos</span>
+            <h3 class="text-2xl font-bold text-white mt-1 mb-2">Starter</h3>
+            <div class="text-4xl font-extrabold text-white mb-6">R$ 79<span class="text-sm font-normal text-slate-400">/mês</span></div>
+            <ul class="space-y-3 text-sm text-slate-300 mb-8">
+              <li class="flex items-center gap-2">✓ 1 Profissional</li>
+              <li class="flex items-center gap-2">✓ Até 100 Agendamentos/mês</li>
+              <li class="flex items-center gap-2">✓ Notificações por Email</li>
+              <li class="flex items-center gap-2">✓ Página Pública Personalizada</li>
+            </ul>
+          </div>
+          <%= link_to "Começar no Starter", new_onboarding_path(plan: "starter"), class: "w-full py-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-semibold text-center text-sm transition block" %>
+        </div>
+
+        <!-- Pro Plan (Featured) -->
+        <div class="p-8 rounded-3xl bg-gradient-to-b from-indigo-900/40 to-slate-900/60 border-2 border-indigo-500/50 backdrop-blur-xl flex flex-col justify-between relative shadow-2xl shadow-indigo-500/20">
+          <div class="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-indigo-500 text-white text-[11px] font-bold uppercase tracking-wider px-3 py-1 rounded-full shadow-md">
+            Mais Popular
+          </div>
+          <div>
+            <span class="text-xs font-semibold text-indigo-400 uppercase tracking-wider">Para Salões & Clínicas</span>
+            <h3 class="text-2xl font-bold text-white mt-1 mb-2">Pro</h3>
+            <div class="text-4xl font-extrabold text-white mb-6">R$ 149<span class="text-sm font-normal text-slate-400">/mês</span></div>
+            <ul class="space-y-3 text-sm text-slate-200 mb-8">
+              <li class="flex items-center gap-2 text-indigo-300 font-medium">✓ Até 5 Profissionais</li>
+              <li class="flex items-center gap-2 text-indigo-300 font-medium">✓ Agendamentos Ilimitados</li>
+              <li class="flex items-center gap-2 text-indigo-300 font-medium">✓ Notificações Email & WhatsApp</li>
+              <li class="flex items-center gap-2">✓ Dashboard Avançado</li>
+              <li class="flex items-center gap-2">✓ Gestão de Bloqueios</li>
+              <li class="flex items-center gap-2">✓ Personalização de Marca</li>
+            </ul>
+          </div>
+          <%= link_to "Iniciar Teste de 14 Dias →", new_onboarding_path(plan: "pro"), class: "w-full py-3.5 rounded-xl bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 text-white font-bold text-center text-sm shadow-lg shadow-indigo-600/30 transition block" %>
+        </div>
+
+        <!-- Enterprise Plan -->
+        <div class="p-8 rounded-3xl bg-slate-900/40 border border-slate-800 backdrop-blur-xl flex flex-col justify-between">
+          <div>
+            <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Para Grandes Equipes</span>
+            <h3 class="text-2xl font-bold text-white mt-1 mb-2">Enterprise</h3>
+            <div class="text-4xl font-extrabold text-white mb-6">R$ 299<span class="text-sm font-normal text-slate-400">/mês</span></div>
+            <ul class="space-y-3 text-sm text-slate-300 mb-8">
+              <li class="flex items-center gap-2">✓ Profissionais Ilimitados</li>
+              <li class="flex items-center gap-2">✓ Agendamentos Ilimitados</li>
+              <li class="flex items-center gap-2">✓ Tudo do plano Pro</li>
+              <li class="flex items-center gap-2">✓ WhatsApp & SMS Prioritário</li>
+              <li class="flex items-center gap-2">✓ Suporte Dedicado 24/7</li>
+              <li class="flex items-center gap-2">✓ Multi-unidades</li>
+            </ul>
+          </div>
+          <%= link_to "Assinar Enterprise →", new_onboarding_path(plan: "enterprise"), class: "w-full py-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-semibold text-center text-sm transition block" %>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="border-t border-slate-800/80 py-8 text-center text-sm text-slate-500">
+    © <%= Time.current.year %> Agenda AI. Desenvolvido com Ruby on Rails 8 & Stripe.
+  </footer>
+</div>

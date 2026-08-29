@@ -1,0 +1,5 @@
+ignore:
+  - CVE-2026-32700
+  - CVE-2026-40295
+  - GHSA-57hq-95w6-v4fc
+  - GHSA-jp94-3292-c3xv

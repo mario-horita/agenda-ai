@@ -1,0 +1,132 @@
+<% content_for :title, "Agendar Horário — #{@tenant.name}" %>
+
+<div class="max-w-4xl mx-auto space-y-8"
+     data-controller="booking"
+     data-booking-tenant-slug-value="<%= @tenant.slug %>"
+     data-booking-service-id-value="<%= @selected_service&.id %>"
+     data-booking-professional-id-value="<%= @selected_professional&.id %>">
+
+  <!-- Header -->
+  <div class="text-center space-y-2">
+    <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 text-xs font-semibold uppercase tracking-wider">
+      <span class="w-1.5 h-1.5 rounded-full bg-indigo-400 animate-pulse"></span>
+      Agendamento em 3 Passos
+    </span>
+    <h2 class="text-3xl font-extrabold text-white">Escolha seu horário</h2>
+    <p class="text-sm text-slate-400">Selecione o serviço, o profissional e o dia desejado.</p>
+  </div>
+
+  <!-- Step 1: Select Service -->
+  <div class="p-6 rounded-3xl bg-slate-900/60 border border-slate-800/80 backdrop-blur-xl space-y-4">
+    <div class="flex items-center gap-3">
+      <div class="w-7 h-7 rounded-lg bg-indigo-500/20 text-indigo-400 flex items-center justify-center font-bold text-xs">1</div>
+      <h3 class="text-base font-bold text-white">Selecione o Serviço</h3>
+    </div>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
+      <% @services.each do |service| %>
+        <div data-booking-target="serviceCard"
+             data-service-id="<%= service.id %>"
+             data-action="click->booking#selectService"
+             class="p-4 rounded-2xl border transition cursor-pointer flex flex-col justify-between <%= service == @selected_service ? 'border-indigo-500 bg-indigo-600/10' : 'border-slate-800 bg-slate-900/50 hover:border-slate-700' %>">
+          <div>
+            <h4 class="text-sm font-bold text-white"><%= service.name %></h4>
+            <% if service.description.present? %>
+              <p class="text-xs text-slate-400 mt-1 line-clamp-2"><%= service.description %></p>
+            <% end %>
+          </div>
+          <div class="flex items-center justify-between pt-3 mt-3 border-t border-slate-800/60">
+            <span class="text-xs text-slate-400 font-medium"><%= service.duration_minutes %> min</span>
+            <span class="text-sm font-extrabold text-emerald-400"><%= service.formatted_price %></span>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  </div>
+
+  <!-- Step 2: Select Professional -->
+  <div class="p-6 rounded-3xl bg-slate-900/60 border border-slate-800/80 backdrop-blur-xl space-y-4">
+    <div class="flex items-center gap-3">
+      <div class="w-7 h-7 rounded-lg bg-indigo-500/20 text-indigo-400 flex items-center justify-center font-bold text-xs">2</div>
+      <h3 class="text-base font-bold text-white">Escolha o Profissional</h3>
+    </div>
+
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+      <!-- Any Professional Option -->
+      <div data-booking-target="professionalCard"
+           data-professional-id=""
+           data-action="click->booking#selectProfessional"
+           class="p-4 rounded-2xl border transition cursor-pointer flex items-center gap-3 <%= @selected_professional.nil? ? 'border-indigo-500 bg-indigo-600/10' : 'border-slate-800 bg-slate-900/50 hover:border-slate-700' %>">
+        <div class="w-10 h-10 rounded-xl bg-slate-800 text-indigo-400 flex items-center justify-center font-bold text-xs">
+          ⚡
+        </div>
+        <div>
+          <h4 class="text-xs font-bold text-white">Qualquer Disponível</h4>
+          <span class="text-[11px] text-slate-400">Primeiro horário livre</span>
+        </div>
+      </div>
+
+      <% @professionals.each do |prof| %>
+        <div data-booking-target="professionalCard"
+             data-professional-id="<%= prof.id %>"
+             data-action="click->booking#selectProfessional"
+             class="p-4 rounded-2xl border transition cursor-pointer flex items-center gap-3 <%= prof == @selected_professional ? 'border-indigo-500 bg-indigo-600/10' : 'border-slate-800 bg-slate-900/50 hover:border-slate-700' %>">
+          <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-500 to-purple-600 flex items-center justify-center font-bold text-xs text-white">
+            <%= prof.name.first.upcase %>
+          </div>
+          <div class="truncate">
+            <h4 class="text-xs font-bold text-white truncate"><%= prof.name %></h4>
+            <span class="text-[11px] text-slate-400 block truncate"><%= prof.services.map(&:name).join(", ") %></span>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  </div>
+
+  <!-- Step 3: Date & Slots -->
+  <div class="p-6 rounded-3xl bg-slate-900/60 border border-slate-800/80 backdrop-blur-xl space-y-6">
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div class="flex items-center gap-3">
+        <div class="w-7 h-7 rounded-lg bg-indigo-500/20 text-indigo-400 flex items-center justify-center font-bold text-xs">3</div>
+        <h3 class="text-base font-bold text-white">Selecione a Data & Horário</h3>
+      </div>
+
+      <div class="flex items-center gap-2">
+        <label class="text-xs font-semibold text-slate-400">Data:</label>
+        <input type="date"
+               value="<%= @date.to_s %>"
+               min="<%= Date.current.to_s %>"
+               data-booking-target="dateInput"
+               data-action="change->booking#dateChanged"
+               class="px-3 py-1.5 rounded-xl bg-slate-950 border border-slate-800 text-white text-xs outline-none focus:border-indigo-500">
+      </div>
+    </div>
+
+    <!-- Container where slots are dynamically loaded -->
+    <div data-booking-target="slotsContainer">
+      <!-- Populated via Stimulus fetch -->
+    </div>
+  </div>
+
+  <!-- Bottom CTA Fixed Bar -->
+  <div class="sticky bottom-6 p-4 rounded-2xl bg-slate-900/90 border border-slate-800 backdrop-blur-xl shadow-2xl flex flex-col sm:flex-row items-center justify-between gap-4">
+    <div>
+      <span data-booking-target="selectedSlotInfo" class="text-xs font-bold text-indigo-400 hidden block">
+        Horário Selecionado
+      </span>
+      <p class="text-xs text-slate-400">Selecione um horário acima para continuar com os dados de contato.</p>
+    </div>
+
+    <input type="hidden" data-booking-target="selectedStartsAtInput">
+    <input type="hidden" data-booking-target="selectedProfInput" value="<%= @selected_professional&.id %>">
+    <input type="hidden" data-booking-target="selectedServiceInput" value="<%= @selected_service&.id %>">
+
+    <button type="button"
+            disabled
+            data-booking-target="checkoutButton"
+            data-action="click->booking#proceedToCheckout"
+            class="w-full sm:w-auto px-8 py-3 rounded-xl bg-gradient-to-r from-indigo-600 to-violet-600 text-white font-bold text-xs uppercase tracking-wider shadow-lg shadow-indigo-600/30 transition opacity-50 cursor-not-allowed">
+      Continuar com meus dados →
+    </button>
+  </div>
+</div>

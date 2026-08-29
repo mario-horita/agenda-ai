@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="h-full bg-slate-950 text-slate-100 antialiased">
+  <head>
+    <title><%= content_for(:title) || (current_tenant ? "#{current_tenant.name} — Painel Admin" : "Painel Admin") %></title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <%= yield :head %>
+
+    <link rel="icon" href="/icon.png" type="image/png">
+    <link rel="icon" href="/icon.svg" type="image/svg+xml">
+
+    <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
+    <%= javascript_importmap_tags %>
+    <style>
+      body { font-family: 'Plus Jakarta Sans', sans-serif; }
+    </style>
+  </head>
+
+  <body class="min-h-full flex bg-slate-950 text-slate-100">
+    <!-- Sidebar -->
+    <aside class="w-64 border-r border-slate-800/80 bg-slate-900/50 backdrop-blur-xl flex flex-col justify-between shrink-0">
+      <div>
+        <!-- Brand Header -->
+        <div class="h-16 flex items-center px-6 border-b border-slate-800/80 gap-3">
+          <div class="w-8 h-8 rounded-lg bg-gradient-to-tr from-indigo-500 to-violet-500 flex items-center justify-center font-bold text-white shadow-lg shadow-indigo-500/25">
+            <%= current_tenant&.name&.first&.upcase || "A" %>
+          </div>
+          <div class="truncate">
+            <h2 class="text-sm font-semibold text-white truncate"><%= current_tenant&.name || "Agenda AI" %></h2>
+            <span class="text-[10px] font-medium uppercase tracking-wider text-indigo-400 bg-indigo-500/10 px-1.5 py-0.5 rounded">
+              Plano <%= current_tenant&.plan&.capitalize || "Starter" %>
+            </span>
+          </div>
+        </div>
+
+        <!-- Navigation Links -->
+        <nav class="p-4 space-y-1 text-sm font-medium">
+          <%= link_to admin_root_path(tenant_slug: current_tenant&.slug), class: "flex items-center gap-3 px-3 py-2.5 rounded-xl #{controller_name == 'dashboard' ? 'bg-indigo-600/15 text-indigo-400 border border-indigo-500/20' : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/50'} transition" do %>
+            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+            </svg>
+            Dashboard
+          <% end %>
+
+          <%= link_to admin_appointments_path(tenant_slug: current_tenant&.slug), class: "flex items-center gap-3 px-3 py-2.5 rounded-xl #{controller_name == 'appointments' ? 'bg-indigo-600/15 text-indigo-400 border border-indigo-500/20' : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/50'} transition" do %>
+            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+            </svg>
+            Agendamentos
+          <% end %>
+
+          <%= link_to admin_professionals_path(tenant_slug: current_tenant&.slug), class: "flex items-center gap-3 px-3 py-2.5 rounded-xl #{controller_name.in?(%w[professionals availabilities time_blocks]) ? 'bg-indigo-600/15 text-indigo-400 border border-indigo-500/20' : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/50'} transition" do %>
+            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+            </svg>
+            Profissionais
+          <% end %>
+
+          <%= link_to admin_services_path(tenant_slug: current_tenant&.slug), class: "flex items-center gap-3 px-3 py-2.5 rounded-xl #{controller_name == 'services' ? 'bg-indigo-600/15 text-indigo-400 border border-indigo-500/20' : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/50'} transition" do %>
+            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+            </svg>
+            Serviços
+          <% end %>
+
+          <%= link_to admin_subscription_path(tenant_slug: current_tenant&.slug), class: "flex items-center gap-3 px-3 py-2.5 rounded-xl #{controller_name == 'subscriptions' ? 'bg-indigo-600/15 text-indigo-400 border border-indigo-500/20' : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/50'} transition" do %>
+            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
+            </svg>
+            Assinatura & Planos
+          <% end %>
+
+          <%= link_to edit_admin_setting_path(tenant_slug: current_tenant&.slug), class: "flex items-center gap-3 px-3 py-2.5 rounded-xl #{controller_name == 'settings' ? 'bg-indigo-600/15 text-indigo-400 border border-indigo-500/20' : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/50'} transition" do %>
+            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+            </svg>
+            Configurações
+          <% end %>
+        </nav>
+      </div>
+
+      <!-- User & Public Page Footer -->
+      <div class="p-4 border-t border-slate-800/80 space-y-3">
+        <% if current_tenant %>
+          <%= link_to public_tenant_page_path(tenant_slug: current_tenant.slug), target: "_blank", class: "flex items-center justify-center gap-2 w-full py-2 px-3 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs font-medium text-slate-300 transition" do %>
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+            </svg>
+            Ver Página Pública
+          <% end %>
+        <% end %>
+
+        <div class="flex items-center justify-between pt-2">
+          <div class="truncate">
+            <p class="text-xs font-medium text-white truncate"><%= current_user&.name || "Usuário" %></p>
+            <p class="text-[11px] text-slate-400 truncate"><%= current_user&.email %></p>
+          </div>
+          <%= button_to destroy_user_session_path, method: :delete, class: "text-slate-400 hover:text-rose-400 p-1.5 rounded-lg hover:bg-slate-800 transition", title: "Sair" do %>
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+            </svg>
+          <% end %>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <div class="flex-1 flex flex-col min-w-0 overflow-y-auto">
+      <!-- Top header bar -->
+      <header class="h-16 border-b border-slate-800/80 flex items-center justify-between px-8 bg-slate-900/30 backdrop-blur-md sticky top-0 z-30">
+        <h1 class="text-lg font-semibold text-white"><%= yield(:page_title) || "Dashboard" %></h1>
+        <div class="flex items-center gap-3">
+          <span class="text-xs text-slate-400">Status: <span class="text-emerald-400 font-medium">Online</span></span>
+        </div>
+      </header>
+
+      <!-- Flash Messages inside Admin -->
+      <% if notice.present? %>
+        <div class="mx-8 mt-6 bg-emerald-500/10 border border-emerald-500/20 text-emerald-300 px-4 py-3 rounded-xl shadow-lg flex items-center gap-3" role="alert">
+          <svg class="w-5 h-5 text-emerald-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          <span class="text-sm font-medium"><%= notice %></span>
+        </div>
+      <% end %>
+
+      <% if alert.present? %>
+        <div class="mx-8 mt-6 bg-rose-500/10 border border-rose-500/20 text-rose-300 px-4 py-3 rounded-xl shadow-lg flex items-center gap-3" role="alert">
+          <svg class="w-5 h-5 text-rose-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          <span class="text-sm font-medium"><%= alert %></span>
+        </div>
+      <% end %>
+
+      <!-- Main body -->
+      <main class="p-8">
+        <%= yield %>
+      </main>
+    </div>
+  </body>
+</html>

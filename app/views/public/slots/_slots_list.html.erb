@@ -1,0 +1,29 @@
+<div class="space-y-3" id="slots_container">
+  <div class="flex items-center justify-between">
+    <h4 class="text-xs font-bold uppercase tracking-wider text-slate-300">
+      Horários para <%= date.strftime('%d/%m/%Y') %>
+    </h4>
+    <span class="text-xs text-indigo-400 font-semibold"><%= slots.size %> disponíveis</span>
+  </div>
+
+  <% if slots.any? %>
+    <div class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-2">
+      <% slots.each do |slot| %>
+        <button type="button"
+                data-starts-at="<%= slot[:starts_at] %>"
+                data-ends-at="<%= slot[:ends_at] %>"
+                data-professional-id="<%= slot[:professional_id] %>"
+                class="py-2 px-3 rounded-xl bg-slate-900 border border-slate-800 hover:border-indigo-500 hover:bg-indigo-600/10 text-white text-xs font-bold transition flex flex-col items-center justify-center gap-0.5 group">
+          <span class="text-indigo-400 group-hover:text-indigo-300 font-mono"><%= slot[:formatted_time] %></span>
+          <% unless professional %>
+            <span class="text-[10px] text-slate-500 truncate max-w-full font-normal"><%= slot[:professional_name]&.split&.first %></span>
+          <% end %>
+        </button>
+      <% end %>
+    </div>
+  <% else %>
+    <div class="p-6 rounded-2xl bg-slate-900/40 border border-slate-800/80 text-center">
+      <p class="text-xs text-slate-400">Nenhum horário disponível para esta data.</p>
+    </div>
+  <% end %>
+</div>

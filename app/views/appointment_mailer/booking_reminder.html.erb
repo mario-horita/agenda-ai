@@ -1,0 +1,22 @@
+<div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; max-width: 600px; margin: 0 auto; background-color: #0f172a; color: #f8fafc; padding: 32px; border-radius: 16px;">
+  <div style="text-align: center; margin-bottom: 24px;">
+    <h1 style="color: #6366f1; font-size: 24px; font-weight: 800; margin: 0;"><%= @tenant.name %></h1>
+    <p style="color: #94a3b8; font-size: 14px; margin-top: 4px;">Lembrete de Horário</p>
+  </div>
+
+  <div style="background-color: #1e293b; padding: 24px; border-radius: 12px; margin-bottom: 24px; border: 1px solid #334155;">
+    <h2 style="color: #ffffff; font-size: 18px; margin-top: 0; margin-bottom: 16px;">Olá, <%= @client.name %>! ⏰</h2>
+    <p style="color: #cbd5e1; font-size: 14px; line-height: 1.6; margin-bottom: 16px;">
+      Este é um lembrete automático do seu agendamento para <strong><%= @appointment.starts_at.strftime('%d/%m/%Y às %H:%M') %></strong>.
+    </p>
+
+    <div style="background-color: #0f172a; padding: 16px; border-radius: 8px; margin-bottom: 16px;">
+      <p style="margin: 0; color: #94a3b8; font-size: 13px;">Serviço: <strong style="color: #ffffff;"><%= @service.name %></strong></p>
+      <p style="margin: 4px 0 0 0; color: #94a3b8; font-size: 13px;">Profissional: <strong style="color: #ffffff;"><%= @professional.name %></strong></p>
+    </div>
+  </div>
+
+  <div style="text-align: center; color: #94a3b8; font-size: 12px;">
+    <p>© <%= Time.current.year %> <%= @tenant.name %></p>
+  </div>
+</div>

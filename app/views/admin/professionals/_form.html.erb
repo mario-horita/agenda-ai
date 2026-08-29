@@ -1,0 +1,73 @@
+<%= form_with(model: [:admin, professional], url: professional.persisted? ? admin_professional_path(tenant_slug: current_tenant.slug, id: professional.id) : admin_professionals_path(tenant_slug: current_tenant.slug), class: "space-y-6") do |f| %>
+  <% if professional.errors.any? %>
+    <div class="p-4 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-300 text-sm space-y-1">
+      <p class="font-bold">Corrija os seguintes erros:</p>
+      <ul class="list-disc list-inside text-xs space-y-0.5">
+        <% professional.errors.full_messages.each do |msg| %>
+          <li><%= msg %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <div class="space-y-4">
+      <div>
+        <%= f.label :name, "Nome completo *", class: "block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5" %>
+        <%= f.text_field :name, required: true, class: "w-full px-4 py-2.5 bg-slate-900 border border-slate-800 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 rounded-xl text-white placeholder-slate-500 text-sm outline-none", placeholder: "Ex: João Barbeiro" %>
+      </div>
+
+      <div>
+        <%= f.label :email, "Email", class: "block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5" %>
+        <%= f.email_field :email, class: "w-full px-4 py-2.5 bg-slate-900 border border-slate-800 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 rounded-xl text-white placeholder-slate-500 text-sm outline-none", placeholder: "joao@empresa.com" %>
+      </div>
+
+      <div>
+        <%= f.label :phone, "Telefone / WhatsApp", class: "block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5" %>
+        <%= f.telephone_field :phone, class: "w-full px-4 py-2.5 bg-slate-900 border border-slate-800 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 rounded-xl text-white placeholder-slate-500 text-sm outline-none", placeholder: "(11) 98765-4321" %>
+      </div>
+
+      <div>
+        <%= f.label :buffer_minutes, "Intervalo entre agendamentos (minutos)", class: "block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5" %>
+        <%= f.number_field :buffer_minutes, min: 0, step: 5, class: "w-full px-4 py-2.5 bg-slate-900 border border-slate-800 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 rounded-xl text-white placeholder-slate-500 text-sm outline-none" %>
+        <span class="text-[11px] text-slate-500 mt-1 block">Tempo de descanso ou preparação entre atendimentos (ex: 10 min).</span>
+      </div>
+
+      <div class="flex items-center gap-2 pt-2">
+        <%= f.check_box :active, class: "h-4 w-4 rounded border-slate-700 bg-slate-900 text-indigo-600 focus:ring-indigo-500 focus:ring-offset-slate-950" %>
+        <%= f.label :active, "Profissional ativo para novos agendamentos", class: "text-sm text-slate-300" %>
+      </div>
+    </div>
+
+    <div class="space-y-4">
+      <div>
+        <%= f.label :bio, "Biografia / Especialidade", class: "block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5" %>
+        <%= f.text_area :bio, rows: 4, class: "w-full px-4 py-2.5 bg-slate-900 border border-slate-800 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 rounded-xl text-white placeholder-slate-500 text-sm outline-none", placeholder: "Breve descrição sobre o profissional..." %>
+      </div>
+
+      <div>
+        <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">Serviços que este profissional realiza</label>
+        <div class="p-4 rounded-xl bg-slate-900/60 border border-slate-800 space-y-2.5 max-h-56 overflow-y-auto">
+          <% if services.any? %>
+            <% services.each do |service| %>
+              <label class="flex items-center gap-3 p-2 rounded-lg hover:bg-slate-800/60 transition cursor-pointer">
+                <%= check_box_tag "professional[service_ids][]", service.id, professional.service_ids.include?(service.id), id: "service_#{service.id}", class: "h-4 w-4 rounded border-slate-700 bg-slate-800 text-indigo-600 focus:ring-indigo-500 focus:ring-offset-slate-900" %>
+                <div class="flex-1 min-w-0 flex items-center justify-between">
+                  <span class="text-xs font-medium text-white truncate"><%= service.name %></span>
+                  <span class="text-[11px] text-slate-400"><%= service.duration_minutes %> min • <%= service.formatted_price %></span>
+                </div>
+              </label>
+            <% end %>
+          <% else %>
+            <p class="text-xs text-slate-500 italic">Nenhum serviço cadastrado ainda.</p>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="flex items-center justify-end gap-3 pt-6 border-t border-slate-800">
+    <%= link_to "Cancelar", admin_professionals_path(tenant_slug: current_tenant.slug), class: "px-5 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-semibold text-slate-300 transition" %>
+    <%= f.submit professional.persisted? ? "Salvar Alterações" : "Cadastrar Profissional", class: "px-6 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold shadow-lg shadow-indigo-600/30 transition cursor-pointer" %>
+  </div>
+<% end %>

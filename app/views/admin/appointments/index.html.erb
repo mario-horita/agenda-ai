@@ -1,0 +1,110 @@
+<% content_for :page_title, "Gestão de Agendamentos" %>
+
+<div class="space-y-6">
+  <!-- Header with Filters -->
+  <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+    <div>
+      <h2 class="text-xl font-bold text-white">Todos os Agendamentos</h2>
+      <p class="text-xs text-slate-400 mt-0.5">Visualize e gerencie os atendimentos do seu estabelecimento.</p>
+    </div>
+
+    <!-- Status filter tabs -->
+    <div class="flex items-center gap-1.5 p-1 bg-slate-900 border border-slate-800 rounded-xl text-xs font-semibold overflow-x-auto max-w-full">
+      <%= link_to "Todos", admin_appointments_path(tenant_slug: current_tenant.slug, status: "all"), class: "px-3 py-1.5 rounded-lg #{params[:status].blank? || params[:status] == 'all' ? 'bg-indigo-600 text-white' : 'text-slate-400 hover:text-white'} transition" %>
+      <%= link_to "Confirmados", admin_appointments_path(tenant_slug: current_tenant.slug, status: "confirmed"), class: "px-3 py-1.5 rounded-lg #{params[:status] == 'confirmed' ? 'bg-indigo-600 text-white' : 'text-slate-400 hover:text-white'} transition" %>
+      <%= link_to "Concluídos", admin_appointments_path(tenant_slug: current_tenant.slug, status: "completed"), class: "px-3 py-1.5 rounded-lg #{params[:status] == 'completed' ? 'bg-indigo-600 text-white' : 'text-slate-400 hover:text-white'} transition" %>
+      <%= link_to "Cancelados", admin_appointments_path(tenant_slug: current_tenant.slug, status: "cancelled"), class: "px-3 py-1.5 rounded-lg #{params[:status] == 'cancelled' ? 'bg-indigo-600 text-white' : 'text-slate-400 hover:text-white'} transition" %>
+      <%= link_to "No-Show", admin_appointments_path(tenant_slug: current_tenant.slug, status: "no_show"), class: "px-3 py-1.5 rounded-lg #{params[:status] == 'no_show' ? 'bg-indigo-600 text-white' : 'text-slate-400 hover:text-white'} transition" %>
+    </div>
+  </div>
+
+  <!-- Appointments Table -->
+  <% if @appointments.any? %>
+    <div class="rounded-3xl bg-slate-900/50 border border-slate-800/80 backdrop-blur-xl overflow-hidden shadow-xl">
+      <div class="overflow-x-auto">
+        <table class="w-full text-left text-xs text-slate-300">
+          <thead class="bg-slate-950/60 border-b border-slate-800 text-[11px] uppercase tracking-wider text-slate-400 font-semibold">
+            <tr>
+              <th class="py-3.5 px-6">Data / Horário</th>
+              <th class="py-3.5 px-6">Cliente</th>
+              <th class="py-3.5 px-6">Serviço</th>
+              <th class="py-3.5 px-6">Profissional</th>
+              <th class="py-3.5 px-6">Valor</th>
+              <th class="py-3.5 px-6">Status</th>
+              <th class="py-3.5 px-6 text-right">Ações</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-800/60">
+            <% @appointments.each do |appt| %>
+              <tr class="hover:bg-slate-800/30 transition">
+                <td class="py-4 px-6 font-medium text-white">
+                  <div><%= appt.starts_at.strftime('%d/%m/%Y') %></div>
+                  <div class="text-indigo-400 text-[11px]"><%= appt.formatted_time %></div>
+                </td>
+                <td class="py-4 px-6">
+                  <div class="font-bold text-white"><%= appt.client.name %></div>
+                  <div class="text-slate-400 text-[11px]"><%= appt.client.phone %></div>
+                </td>
+                <td class="py-4 px-6">
+                  <span class="font-semibold text-slate-200"><%= appt.service.name %></span>
+                  <span class="text-slate-500 text-[11px] block"><%= appt.service.duration_minutes %> min</span>
+                </td>
+                <td class="py-4 px-6 text-slate-300">
+                  <%= appt.professional.name %>
+                </td>
+                <td class="py-4 px-6 font-bold text-emerald-400">
+                  <%= appt.service.formatted_price %>
+                </td>
+                <td class="py-4 px-6">
+                  <% case appt.status %>
+                  <% when "confirmed" %>
+                    <span class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 uppercase">Confirmado</span>
+                  <% when "completed" %>
+                    <span class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 uppercase">Concluído</span>
+                  <% when "cancelled" %>
+                    <span class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-rose-500/10 text-rose-400 border border-rose-500/20 uppercase">Cancelado</span>
+                  <% when "no_show" %>
+                    <span class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-amber-500/10 text-amber-400 border border-amber-500/20 uppercase">No-Show</span>
+                  <% end %>
+                </td>
+                <td class="py-4 px-6 text-right">
+                  <div class="flex items-center justify-end gap-1.5">
+                    <% if appt.status_confirmed? %>
+                      <%= button_to complete_admin_appointment_path(tenant_slug: current_tenant.slug, id: appt.id), method: :patch, class: "p-1.5 rounded-lg bg-emerald-500/10 text-emerald-400 hover:bg-emerald-500/20 transition", title: "Marcar como Concluído" do %>
+                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                        </svg>
+                      <% end %>
+
+                      <%= button_to no_show_admin_appointment_path(tenant_slug: current_tenant.slug, id: appt.id), method: :patch, class: "p-1.5 rounded-lg bg-amber-500/10 text-amber-400 hover:bg-amber-500/20 transition", title: "Marcar No-Show" do %>
+                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636" />
+                        </svg>
+                      <% end %>
+
+                      <%= button_to cancel_admin_appointment_path(tenant_slug: current_tenant.slug, id: appt.id), method: :patch, data: { turbo_confirm: "Cancelar este agendamento?" }, class: "p-1.5 rounded-lg bg-rose-500/10 text-rose-400 hover:bg-rose-500/20 transition", title: "Cancelar" do %>
+                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                      <% end %>
+                    <% end %>
+                  </div>
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  <% else %>
+    <div class="p-12 rounded-3xl bg-slate-900/40 border border-slate-800/80 text-center space-y-4">
+      <div class="w-16 h-16 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 flex items-center justify-center mx-auto">
+        <svg class="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+        </svg>
+      </div>
+      <h3 class="text-lg font-bold text-white">Nenhum agendamento encontrado</h3>
+      <p class="text-sm text-slate-400 max-w-sm mx-auto">Os agendamentos feitos pelos seus clientes na página pública aparecerão aqui.</p>
+    </div>
+  <% end %>
+</div>

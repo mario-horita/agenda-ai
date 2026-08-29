@@ -1,0 +1,76 @@
+# Database configuration supporting SQLite (local default) and Neon PostgreSQL (via DATABASE_URL) with Solid Trifecta.
+default: &default
+  adapter: sqlite3
+  max_connections: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+  timeout: 5000
+
+development:
+  <<: *default
+  database: storage/development.sqlite3
+
+test:
+  <<: *default
+  database: storage/test.sqlite3
+
+production:
+  primary: &primary_production
+    <% if ENV["DATABASE_URL"].present? %>
+    adapter: postgresql
+    url: <%= ENV["DATABASE_URL"] %>
+    max_connections: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+    timeout: 5000
+    connect_timeout: 10
+    checkout_timeout: 5
+    sslmode: require
+    <% else %>
+    <<: *default
+    database: storage/production.sqlite3
+    <% end %>
+  cache:
+    <% if ENV["CACHE_DATABASE_URL"].present? %>
+    adapter: postgresql
+    url: <%= ENV["CACHE_DATABASE_URL"] %>
+    max_connections: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+    timeout: 5000
+    sslmode: require
+    migrations_paths: db/cache_migrate
+    <% elsif ENV["DATABASE_URL"].present? %>
+    <<: *primary_production
+    migrations_paths: db/cache_migrate
+    <% else %>
+    <<: *default
+    database: storage/production_cache.sqlite3
+    migrations_paths: db/cache_migrate
+    <% end %>
+  queue:
+    <% if ENV["QUEUE_DATABASE_URL"].present? %>
+    adapter: postgresql
+    url: <%= ENV["QUEUE_DATABASE_URL"] %>
+    max_connections: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+    timeout: 5000
+    sslmode: require
+    migrations_paths: db/queue_migrate
+    <% elsif ENV["DATABASE_URL"].present? %>
+    <<: *primary_production
+    migrations_paths: db/queue_migrate
+    <% else %>
+    <<: *default
+    database: storage/production_queue.sqlite3
+    migrations_paths: db/queue_migrate
+    <% end %>
+  cable:
+    <% if ENV["CABLE_DATABASE_URL"].present? %>
+    adapter: postgresql
+    url: <%= ENV["CABLE_DATABASE_URL"] %>
+    max_connections: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+    timeout: 5000
+    sslmode: require
+    migrations_paths: db/cable_migrate
+    <% elsif ENV["DATABASE_URL"].present? %>
+    <<: *primary_production
+    migrations_paths: db/cable_migrate
+    <% else %>
+    <<: *default
+    database: storage/production_cable.sqlite3
+    migrations_paths: db/cable_migrate
+    <% end %>

@@ -1,0 +1,208 @@
+<% content_for :page_title, "Visão Geral do Negócio" %>
+
+<div class="space-y-8">
+  <!-- Period Filter & Welcome Header -->
+  <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+    <div>
+      <h2 class="text-2xl font-extrabold text-white">Dashboard & Métricas</h2>
+      <p class="text-xs text-slate-400 mt-0.5">Acompanhe a performance e os atendimentos de <strong class="text-slate-200"><%= @tenant.name %></strong></p>
+    </div>
+
+    <!-- Filter Buttons -->
+    <div class="flex items-center gap-1.5 p-1 bg-slate-900 border border-slate-800 rounded-xl text-xs font-semibold overflow-x-auto max-w-full">
+      <%= link_to "Hoje", admin_root_path(tenant_slug: current_tenant.slug, period: "today"), class: "px-3 py-1.5 rounded-lg #{@period == 'today' ? 'bg-indigo-600 text-white' : 'text-slate-400 hover:text-white'} transition" %>
+      <%= link_to "Esta Semana", admin_root_path(tenant_slug: current_tenant.slug, period: "this_week"), class: "px-3 py-1.5 rounded-lg #{@period == 'this_week' ? 'bg-indigo-600 text-white' : 'text-slate-400 hover:text-white'} transition" %>
+      <%= link_to "Este Mês", admin_root_path(tenant_slug: current_tenant.slug, period: "this_month"), class: "px-3 py-1.5 rounded-lg #{@period == 'this_month' ? 'bg-indigo-600 text-white' : 'text-slate-400 hover:text-white'} transition" %>
+      <%= link_to "Últimos 30 Dias", admin_root_path(tenant_slug: current_tenant.slug, period: "last_30_days"), class: "px-3 py-1.5 rounded-lg #{@period == 'last_30_days' ? 'bg-indigo-600 text-white' : 'text-slate-400 hover:text-white'} transition" %>
+    </div>
+  </div>
+
+  <!-- KPI Metric Cards Grid -->
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+    <!-- Card 1: Faturamento -->
+    <div class="p-6 rounded-3xl bg-slate-900/60 border border-slate-800/80 backdrop-blur-xl space-y-3 relative overflow-hidden">
+      <div class="flex items-center justify-between">
+        <span class="text-xs font-semibold uppercase tracking-wider text-slate-400">Receita Prevista</span>
+        <div class="w-8 h-8 rounded-xl bg-emerald-500/10 text-emerald-400 flex items-center justify-center font-bold text-sm">
+          R$
+        </div>
+      </div>
+      <div>
+        <h3 class="text-2xl font-extrabold text-emerald-400">
+          <%= ActionController::Base.helpers.number_to_currency(@metrics[:total_revenue_reais], unit: "R$", separator: ",", delimiter: ".") %>
+        </h3>
+        <p class="text-[11px] text-slate-500 mt-1"><%= @metrics[:completed_count] + @metrics[:confirmed_count] %> atendimentos confirmados/concluídos</p>
+      </div>
+    </div>
+
+    <!-- Card 2: Total Agendamentos -->
+    <div class="p-6 rounded-3xl bg-slate-900/60 border border-slate-800/80 backdrop-blur-xl space-y-3 relative overflow-hidden">
+      <div class="flex items-center justify-between">
+        <span class="text-xs font-semibold uppercase tracking-wider text-slate-400">Agendamentos</span>
+        <div class="w-8 h-8 rounded-xl bg-indigo-500/10 text-indigo-400 flex items-center justify-center">
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+          </svg>
+        </div>
+      </div>
+      <div>
+        <h3 class="text-2xl font-extrabold text-white">
+          <%= @metrics[:total_appointments] %>
+        </h3>
+        <p class="text-[11px] text-slate-500 mt-1"><%= @metrics[:completed_count] %> concluídos • <%= @metrics[:confirmed_count] %> confirmados</p>
+      </div>
+    </div>
+
+    <!-- Card 3: Taxa de No-Show -->
+    <div class="p-6 rounded-3xl bg-slate-900/60 border border-slate-800/80 backdrop-blur-xl space-y-3 relative overflow-hidden">
+      <div class="flex items-center justify-between">
+        <span class="text-xs font-semibold uppercase tracking-wider text-slate-400">Taxa de Faltas (No-Show)</span>
+        <div class="w-8 h-8 rounded-xl <%= @metrics[:no_show_rate] > 10 ? 'bg-rose-500/10 text-rose-400' : 'bg-amber-500/10 text-amber-400' %> flex items-center justify-center">
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636" />
+          </svg>
+        </div>
+      </div>
+      <div>
+        <h3 class="text-2xl font-extrabold <%= @metrics[:no_show_rate] > 10 ? 'text-rose-400' : 'text-amber-400' %>">
+          <%= @metrics[:no_show_rate] %>%
+        </h3>
+        <p class="text-[11px] text-slate-500 mt-1"><%= @metrics[:no_show_count] %> clientes não compareceram</p>
+      </div>
+    </div>
+
+    <!-- Card 4: Taxa de Cancelamento -->
+    <div class="p-6 rounded-3xl bg-slate-900/60 border border-slate-800/80 backdrop-blur-xl space-y-3 relative overflow-hidden">
+      <div class="flex items-center justify-between">
+        <span class="text-xs font-semibold uppercase tracking-wider text-slate-400">Taxa de Cancelamentos</span>
+        <div class="w-8 h-8 rounded-xl bg-slate-800 text-slate-400 flex items-center justify-center">
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </div>
+      </div>
+      <div>
+        <h3 class="text-2xl font-extrabold text-slate-300">
+          <%= @metrics[:cancellation_rate] %>%
+        </h3>
+        <p class="text-[11px] text-slate-500 mt-1"><%= @metrics[:cancelled_count] %> agendamentos cancelados</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Charts & Breakdown Grid -->
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+    <!-- Top Services Breakdown -->
+    <div class="p-6 rounded-3xl bg-slate-900/50 border border-slate-800/80 backdrop-blur-xl space-y-4">
+      <h3 class="text-sm font-bold text-white flex items-center justify-between">
+        <span>Top Serviços</span>
+        <span class="text-xs text-indigo-400 font-normal">Mais agendados</span>
+      </h3>
+
+      <% if @metrics[:top_services].any? %>
+        <div class="space-y-3">
+          <% @metrics[:top_services].each do |item| %>
+            <div class="space-y-1.5">
+              <div class="flex items-center justify-between text-xs">
+                <span class="font-medium text-slate-200"><%= item[:name] %></span>
+                <span class="font-bold text-emerald-400"><%= ActionController::Base.helpers.number_to_currency(item[:revenue_reais], unit: "R$", separator: ",", delimiter: ".") %></span>
+              </div>
+              <div class="w-full bg-slate-800 rounded-full h-1.5 overflow-hidden">
+                <div class="bg-indigo-500 h-1.5 rounded-full" style="width: <%= [(@metrics[:total_appointments].positive? ? (item[:count].to_f / @metrics[:total_appointments] * 100) : 0), 100].min %>%"></div>
+              </div>
+              <span class="text-[10px] text-slate-500 block text-right"><%= item[:count] %> atendimentos</span>
+            </div>
+          <% end %>
+        </div>
+      <% else %>
+        <p class="text-xs text-slate-500 text-center py-6">Nenhum atendimento registrado no período.</p>
+      <% end %>
+    </div>
+
+    <!-- Top Professionals Breakdown -->
+    <div class="p-6 rounded-3xl bg-slate-900/50 border border-slate-800/80 backdrop-blur-xl space-y-4">
+      <h3 class="text-sm font-bold text-white flex items-center justify-between">
+        <span>Desempenho da Equipe</span>
+        <span class="text-xs text-indigo-400 font-normal">Por profissional</span>
+      </h3>
+
+      <% if @metrics[:top_professionals].any? %>
+        <div class="space-y-3">
+          <% @metrics[:top_professionals].each do |item| %>
+            <div class="space-y-1.5">
+              <div class="flex items-center justify-between text-xs">
+                <span class="font-medium text-slate-200"><%= item[:name] %></span>
+                <span class="font-bold text-emerald-400"><%= ActionController::Base.helpers.number_to_currency(item[:revenue_reais], unit: "R$", separator: ",", delimiter: ".") %></span>
+              </div>
+              <div class="w-full bg-slate-800 rounded-full h-1.5 overflow-hidden">
+                <div class="bg-purple-500 h-1.5 rounded-full" style="width: <%= [(@metrics[:total_appointments].positive? ? (item[:count].to_f / @metrics[:total_appointments] * 100) : 0), 100].min %>%"></div>
+              </div>
+              <span class="text-[10px] text-slate-500 block text-right"><%= item[:count] %> atendimentos</span>
+            </div>
+          <% end %>
+        </div>
+      <% else %>
+        <p class="text-xs text-slate-500 text-center py-6">Nenhum atendimento registrado no período.</p>
+      <% end %>
+    </div>
+
+    <!-- Distribution Trend Bars -->
+    <div class="p-6 rounded-3xl bg-slate-900/50 border border-slate-800/80 backdrop-blur-xl space-y-4">
+      <h3 class="text-sm font-bold text-white flex items-center justify-between">
+        <span>Atendimentos por Dia</span>
+        <span class="text-xs text-slate-400 font-normal">Distribuição</span>
+      </h3>
+
+      <div class="flex items-end justify-between gap-1.5 h-36 pt-4">
+        <% max_day_count = [@metrics[:appointments_by_day].values.max || 1, 1].max %>
+        <% @metrics[:appointments_by_day].each do |day, count| %>
+          <div class="flex-1 flex flex-col items-center gap-1 group relative">
+            <div class="w-full bg-indigo-500/20 group-hover:bg-indigo-500 rounded-t-md transition-all relative" style="height: <%= [(count.to_f / max_day_count * 100), 8].max %>%">
+              <span class="opacity-0 group-hover:opacity-100 absolute -top-7 left-1/2 -translate-x-1/2 px-1.5 py-0.5 rounded bg-slate-950 text-[10px] text-white whitespace-nowrap border border-slate-800 pointer-events-none transition">
+                <%= count %> agend.
+              </span>
+            </div>
+            <span class="text-[9px] text-slate-500 truncate max-w-full"><%= day.split('/').first %></span>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+
+  <!-- Today's Schedule -->
+  <div class="p-6 rounded-3xl bg-slate-900/50 border border-slate-800/80 backdrop-blur-xl space-y-4">
+    <div class="flex items-center justify-between">
+      <div>
+        <h3 class="text-base font-bold text-white">Atendimentos de Hoje</h3>
+        <p class="text-xs text-slate-400">Acompanhe a fila de atendimentos programados para hoje.</p>
+      </div>
+      <%= link_to "Ver Todos →", admin_appointments_path(tenant_slug: current_tenant.slug), class: "text-xs font-semibold text-indigo-400 hover:text-indigo-300 transition" %>
+    </div>
+
+    <% if @metrics[:upcoming_today].any? %>
+      <div class="divide-y divide-slate-800/60">
+        <% @metrics[:upcoming_today].each do |appt| %>
+          <div class="py-3.5 flex items-center justify-between gap-4">
+            <div class="flex items-center gap-4">
+              <span class="font-mono text-xs font-bold text-indigo-400 bg-indigo-500/10 px-2.5 py-1 rounded-lg">
+                <%= appt.starts_at.strftime('%H:%M') %>
+              </span>
+              <div>
+                <h4 class="text-xs font-bold text-white"><%= appt.client.name %></h4>
+                <p class="text-[11px] text-slate-400"><%= appt.service.name %> com <strong><%= appt.professional.name %></strong></p>
+              </div>
+            </div>
+            <div class="flex items-center gap-3">
+              <span class="text-xs font-bold text-emerald-400"><%= appt.service.formatted_price %></span>
+              <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 uppercase">
+                <%= appt.status %>
+              </span>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    <% else %>
+      <p class="text-xs text-slate-500 text-center py-6">Nenhum atendimento agendado para o dia de hoje.</p>
+    <% end %>
+  </div>
+</div>

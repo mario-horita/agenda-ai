@@ -55,6 +55,14 @@ Rails.application.routes.draw do
     end
   end
 
+  # API V1 (Token-based Authentication)
+  namespace :api do
+    namespace :v1 do
+      post "auth/token", to: "auth#token"
+      resources :services, only: [ :index, :show, :create ]
+    end
+  end
+
   # Stripe Webhooks (sem scoping de tenant)
   post "/webhooks/stripe", to: "webhooks/stripe#create"
 end

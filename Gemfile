@@ -71,7 +71,7 @@ group :development do
 end
 
 # Multi-Tenancy & Auth
-gem "acts_as_tenant", "~> 1.0"
+gem "acts_as_tenant", "~> 2.0"
 gem "devise", "~> 4.9"
 
 # Payments & Environment
